@@ -1,0 +1,13 @@
+{
+  "html/home.html": {
+    "refer": [
+      "html/order.html"
+    ],
+    "resources": []
+  },
+  "html/order.html": {
+    "refer": [
+      "html/home.html"
+    ]
+  }
+}

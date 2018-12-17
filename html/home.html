@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>首页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="../css/home.css" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="topBox">
+				首页
+			</div>
+			<div class="indexMain">
+				<div class="cartNum">
+					<img src="../image/icon_bigyellowcar.png">
+					<span>鲁B21567</span>
+				</div>
+				<div class="orderNum">
+					<div class="orderNumLeft">
+						<div>015</div>
+						<p>今日接单</p>
+					</div>
+					<div class="orderNumRight">
+						<div>014</div>
+						<p>昨日接单</p>
+					</div>
+				</div>
+				<div class="orderTotle">
+					<div>120</div>
+					<p>总接单数</p>
+				</div>
+			</div>
+			<div class="btns">
+				<button class="btnsBig">上班</button>
+				<button class="btnsSmall">接单<br/>记录</button>
+			</div> 
+		</div>
+	</body>
+	<script type="text/javascript" src="../js/jquery-3.3.1.js" ></script>
+	<script>
+//		var Url = "https://taxi.shangheweiman.com/api/driver/";
+		$(".btnsSmall").click(function(){
+			window.location.href="order.html";
+		})
+		plusReady();
+		// H5 plus事件处理
+		function plusReady(){
+//			var myImei = plus.device.imei;//真实的imei
+			var myImei = "123456";
+			$.ajax({
+                url: "https://taxi.shangheweiman.com/api/driver/authorizations",
+                method: "post",
+                contentType: "application/json; charset=utf-8",
+                data: {"imei":"123456"},
+                dataType: "jsonp",
+                success: function (data) {
+                	console.log("data",data);
+                	if (data.success) {
+                		console.log("data",data);
+                    } else {
+                        console.log("data",data);
+                    }
+                    
+                }
+           });
+		}
+//		if(window.plus){
+//			console.log("aaa");
+//			plusReady();
+//		}else{
+//			document.addEventListener("plusready",plusReady,false);
+//		}
+	</script>
+</html>

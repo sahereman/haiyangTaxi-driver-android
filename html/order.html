@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>接单记录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="../css/order.css" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="topBox">
+				<img src="../image/icon_backtop.png" class="backPag">
+				接单记录
+			</div>
+			<div class="tabBtn">
+				<div class="active">今日</div>
+				<div>昨日</div>
+				<div>近一月</div>
+			</div>
+			<div class="tabCon">
+				<div class="tabItem">
+					<div class="tabItemOne">
+						<img src="../image/icon_time@2x.png"/>
+						<span>2018-10-23</span>
+						<span>10:23</span>
+						<span class="orderState">已取消</span>
+					</div>
+					<div class="tabItemTwo">
+						<span class="mustG"></span>
+						<span>7080中心-西门西南侧</span>
+					</div>
+					<div class="tabItemThre">
+						<span class="mustR"></span>
+						<span>五四广场</span>
+					</div>
+				</div>
+				<div class="tabItem">
+					<div class="tabItemOne">
+						<img src="../image/icon_time@2x.png"/>
+						<span>2018-10-23</span>
+						<span>10:23</span>
+						<span class="orderStateDone">已完成</span>
+					</div>
+					<div class="tabItemTwo">
+						<span class="mustG"></span>
+						<span>7080中心-西门西南侧</span>
+					</div>
+					<div class="tabItemThre">
+						<span class="mustR"></span>
+						<span>五四广场</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../js/jquery-3.3.1.js" ></script>
+	<script>
+		$(".backPag").on("click",function(){
+			window.location.href="home.html";
+		});
+		$(".tabBtn div").on('click',function(){
+			$(".tabBtn div").removeClass("active");
+			$(this).addClass("active");
+		});
+		
+	</script>
+</html>
