@@ -18,3 +18,7 @@ $(".btnsBig").on('click',function(){
 		alert("请先选择订单");
 	}
 });
+//客户端接收服务端数据时触发
+	    ws.onmessage = function(evt) {
+		      console.log( "接收数据: " + evt.data);
+	    };

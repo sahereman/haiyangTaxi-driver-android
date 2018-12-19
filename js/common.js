@@ -17,3 +17,17 @@
                 }
            });
 		}
+//判断当前浏览器是否支持WebSocket
+	     if ('WebSocket' in window) {
+	        ws = new WebSocket("ws://taxi.shangheweiman.com:5302?token=1");
+	    }
+	    else {
+	        alert('当前浏览器 Not support websocket')
+	    }		
+	    //连接建立时触发
+	    ws.onopen = function(evt) { 
+	        if(evt.currentTarget.readyState == 1){
+	        	console.log("WebSocket连接成功");
+	        	
+	        }
+	    };

@@ -34,6 +34,13 @@ p{
 	background: #fff;
 	z-index: 19;
 }
+.container .topBox>img{
+	float: left;
+	width: 11px;
+	height: 18px;
+	margin-top: 20px;
+	margin-left: 15px;
+}
 .orderMain,.noneOrder{
 	width: 100%;
 	margin-top: 61px;

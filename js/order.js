@@ -7,19 +7,24 @@ $(".backPag").on("click",function(){
 		});
 		//请求后台订单列表数据
 		function requestOrderData(time){
-			
-			
 			ajaxRequest("https://taxi.shangheweiman.com/api/driver/orders","get",{"date":time},function(data){
 			console.log("orders接口成功",data);
 			var orderArr = data.data;
 			var str = "";
-			$.each(orderArr,function(i){
-				str += "<div class='tabItem'><div class='tabItemOne'><img src='../image/icon_time@2x.png'/><span>"+orderArr[i].created_at+"</span><span class='orderStateDone'>"+orderArr[i].status_text+"</span></div>";
-				str += "<div class='tabItemTwo'><span class='mustG'></span><span>"+orderArr[i].from_address+"</span></div>"
-				str += "<div class='tabItemThre'><span class='mustR'></span><span>"+orderArr[i].to_address+"</span></div>";
-				str += "</div>";
+			if(orderArr!=""){
+				
+				$.each(orderArr,function(i){
+					str += "<div class='tabItem'><div class='tabItemOne'><img src='../image/icon_time@2x.png'/><span>"+orderArr[i].created_at+"</span><span class='orderStateDone'>"+orderArr[i].status_text+"</span></div>";
+					str += "<div class='tabItemTwo'><span class='mustG'></span><span>"+orderArr[i].from_address+"</span></div>"
+					str += "<div class='tabItemThre'><span class='mustR'></span><span>"+orderArr[i].to_address+"</span></div>";
+					str += "</div>";
+					$(".tabCon").html(str);
+				});
+			}else{
+				str+="<div style='padding-top:20px;margin-left:30%;'>暂无接单记录</div>"
 				$(".tabCon").html(str);
-			});
+			}
+			
 		},function(data){})
 		}
 		
