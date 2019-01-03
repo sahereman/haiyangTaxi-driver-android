@@ -15,12 +15,18 @@
     <div class="btns">
       <button class="btnsBigMore" v-bind:class="{addBage:selected}" @click="subRea" ref="addBage">提交</button>
     </div>
+    <layer ref="layer"></layer>
   </div>
 </template>
 
 <script>
+  import layer from "../components/layer"
     export default {
         name: "notReceive",
+      //注册组件
+      components: {
+        layer
+      },
         data(){
           return{
             current:-1,
@@ -36,6 +42,7 @@
         },
       mounted:function(){
         var that = this;
+        let layer = this.$refs.layer;
         that.ws.onmessage = function(evt)
         {
           let data = JSON.parse(evt.data);
@@ -52,12 +59,26 @@
           else if (data.status_code == 422){
             switch (data.action) {
               case 'driverCancel' :
-                alert('driverCancel Error');
+                layer.open({
+                  type: 1,
+                  content: 'driverCancel Error',  // 内容
+                  time: 3, // 几秒后自动关闭 默认 2
+                  callback () {  // 几秒后自动关闭 回掉
+                    console.log('弹框消失')
+                  }
+                })
                 break;
             }
           }
           else{
-            alert('系统错误');
+            layer.open({
+              type: 1,
+              content: '系统错误',  // 内容
+              time: 3, // 几秒后自动关闭 默认 2
+              callback () {  // 几秒后自动关闭 回掉
+                console.log('弹框消失')
+              }
+            })
           }
         }
       },
@@ -82,7 +103,15 @@
               }
             });
           }else{
-            alert("请先选择取消原因");
+            let layer = this.$refs.layer;
+            layer.open({
+              type: 1,
+              content: '请先选择取消原因',  // 内容
+              time: 3, // 几秒后自动关闭 默认 2
+              callback () {  // 几秒后自动关闭 回掉
+                console.log('弹框消失')
+              }
+            })
           }
         },
         //返回上一页
@@ -96,6 +125,11 @@
 <style scoped>
   .container{
     width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0;
+    font-size: 16px;
   }
   .container .topBox{
     width: 100%;
@@ -104,7 +138,7 @@
     height: 60px;
     line-height: 60px;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 24px;
     position: fixed;
     top: 0;
     left: 0;
@@ -148,8 +182,8 @@
   }
   .btns .btnsBigMore{
     width: 100%;
-    height: 90px;
-    line-height: 90px;
+    height: 80px;
+    line-height: 80px;
     background: #a4a4a4;
     color: #fff;
     border: none;

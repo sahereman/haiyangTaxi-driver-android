@@ -89,8 +89,21 @@ Vue.prototype.token = window.localStorage.getItem('token');
     };
     xmlhttp.open("POST",'https://taxi.shangheweiman.com/api/driver/authorizations',false);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    Vue.prototype.myImei = "787656,121212121";//用于测试的imei
-    // Vue.prototype.myImei = plus.device.imei;//真实的imei
+    Vue.prototype.myImei = "898859,121212121";//用于测试的imei 627943    867109030017439 898859
+    // H5 plus事件处理
+    // Vue.prototype.plusReady=function(){
+    //   alert( "IMEI1: " + plus.device.imei );
+    //   alert("window.plus1",window.plus);
+    //   Vue.prototype.myImei = plus.device.imei;//真实的imeis
+    // };
+    // if(window.plus){
+    //   Vue.prototype.plusReady();
+    // }else{
+    //   document.addEventListener("plusready",function () {
+    //     alert( "IMEI2: " + plus.device.imei );
+    //     Vue.prototype.myImei = plus.device.imei;//真实的imeis
+    //   },false);
+    // }
       if(Vue.prototype.myImei !=null && Vue.prototype.myImei !=undefined){
         if(Vue.prototype.myImei.indexOf(",") != -1){
           Vue.prototype.myImei = Vue.prototype.myImei.split(",")[0];
@@ -104,7 +117,7 @@ Vue.prototype.token = window.localStorage.getItem('token');
       }catch (e) {
         //跳转设备禁用页面的判断依据
         Vue.prototype.isError = true;
-        Vue.prototype.ws = new WebSocket("ws://taxi.shangheweiman.com:5302");s
+        Vue.prototype.ws = new WebSocket("ws://taxi.shangheweiman.com:5302");
       }
   }
 Vue.prototype.wsStatus = false;
@@ -139,7 +152,7 @@ Vue.prototype.wsSeed = function (obj) {
     Vue.prototype.ws.onopen = oldopen;
     Vue.prototype.ws.onmessage = oldmsg;
     Vue.prototype.ws.onclose = oldclose;
-    alert("连接成功，请再次点击上班");
+    alert("连接成功，请再次点击上班按钮");
   }
 };
 //心跳包定时器

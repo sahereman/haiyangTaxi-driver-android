@@ -141,6 +141,13 @@ export default {
 <style scoped>
   .container{
     width: 100%;
+    font-size: 16px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
   }
   .container .topBox{
     width: 100%;
@@ -149,7 +156,7 @@ export default {
     height: 60px;
     line-height: 60px;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 24px;
     position: fixed;
     top: 0;
     left: 0;
@@ -169,7 +176,7 @@ export default {
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    top: 61px;
+    top: 60px;
     left: 0;
     width: 100%;
     background: #fff;
@@ -185,7 +192,7 @@ export default {
   }
   .tabBtn .active{
     color: #fd985e;
-    border-bottom: 2px solid #fd9153;
+    border-bottom: 3px solid #fd9153;
   }
   .tabCon{
     position: relative;
@@ -220,7 +227,7 @@ export default {
     border-radius: 2px;
   }
   .tabCon .tabItem .tabItemOne>span:nth-child(3){
-    margin-left: 30px;
+    margin-left: 40px;
   }
   .tabCon .tabItem  .tabItemTwo{
     margin: 10px 0;

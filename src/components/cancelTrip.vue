@@ -60,6 +60,11 @@
 <style scoped>
   .container{
     width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0;
+    font-size: 16px;
   }
   .container .topBox{
     width: 100%;
@@ -68,7 +73,7 @@
     height: 60px;
     line-height: 60px;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 24px;
     position: fixed;
     top: 0;
     left: 0;
@@ -151,8 +156,8 @@
   }
   .btns .btnsBigMore{
     width: 100%;
-    height: 90px;
-    line-height: 90px;
+    height: 80px;
+    line-height: 80px;
     background: #fd9153;
     color: #fff;
     border: none;

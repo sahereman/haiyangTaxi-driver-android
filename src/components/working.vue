@@ -31,11 +31,17 @@
       <button class="btnsBigs" @click="tapEndWork()">下班</button>
       <button class="btnsSmall orderList" @click="tapOrderList()">接单<br/>记录</button>
     </div>
+    <layer ref="layer"></layer>
   </div>
 </template>
 <script>
+  import layer from "../components/layer"
 export default {
   'name': 'working',
+  //注册组件
+  components: {
+    layer
+  },
   data () {
     return{
       current:-1,
@@ -49,6 +55,7 @@ export default {
   },
   mounted(){
     var that = this;
+    let layer = this.$refs.layer;
     that.Waiting = true;
     that.ws.onmessage = function(evt)
     {
@@ -66,7 +73,6 @@ export default {
                 that.wOrderList.push(
                   {"from_address":from_address,"distance":distance,"orderKey":orderKey,"needTime":needTime,"Interval":null}
                   );
-
                 that.nearOrderCount = that.wOrderList.length;
                 console.log("that.wOrderList",that.wOrderList);
                 if(that.nearOrderCount > 0){
@@ -87,7 +93,14 @@ export default {
       else if (data.status_code == 422){
         switch (data.action) {
           case 'notify' :
-            alert('notify Error');
+            layer.open({
+              type: 1,
+              content: 'notify Error',  // 内容
+              time: 3, // 几秒后自动关闭 默认 2
+              callback () {  // 几秒后自动关闭 回掉
+                console.log('弹框消失')
+              }
+            })
             break;
           case 'accept' :
             let res = JSON.parse(evt.data);
@@ -95,7 +108,14 @@ export default {
             {
               if(obj == 'data.order_key')
               {
-                alert(res.data[obj][0]);
+                layer.open({
+                  type: 1,
+                  content: res.data[obj][0],  // 内容
+                  time: 3, // 几秒后自动关闭 默认 2
+                  callback () {  // 几秒后自动关闭 回掉
+                    console.log('弹框消失')
+                  }
+                })
                 //（已被抢单）将这笔订单在页面删除,关掉这笔订单的定时器
                 let order = that.wOrderList.find(function (order) {
                   return order.orderKey == that.orderKey;
@@ -112,7 +132,14 @@ export default {
         }
       }
       else{
-        alert('系统错误');
+        layer.open({
+          type: 1,
+          content: '系统错误',  // 内容
+          time: 3, // 几秒后自动关闭 默认 2
+          callback () {  // 几秒后自动关闭 回掉
+            console.log('弹框消失')
+          }
+        })
       }
     }
 
@@ -138,18 +165,28 @@ export default {
           }
         });
       }else {
-        alert("请先选择订单");
+        let layer = this.$refs.layer;
+        layer.open({
+          type: 1,
+          content: '请先选择订单',  // 内容
+          time: 3, // 几秒后自动关闭 默认 2
+          callback () {  // 几秒后自动关闭 回掉
+            console.log('弹框消失')
+          }
+        })
       };
-      //跳转页面之前把所有的定时器都关掉
-      for(var i=0; i<that.wOrderList.length; i++){
-        var itemInterval = that.wOrderList[i].Interval;
-        window.clearInterval(itemInterval);
+      //只有选中订单按接单时才把所有的定时器关掉
+      if(that.acceptOrd){
+        //跳转页面之前把所有的定时器都关掉
+        for(var i=0; i<that.wOrderList.length; i++){
+          var itemInterval = that.wOrderList[i].Interval;
+          window.clearInterval(itemInterval);
+        }
       }
     },
     //下班
     tapEndWork:function () {
       var that = this;
-
       that.wsSeed({
         "action":"close"
       });
@@ -214,7 +251,7 @@ export default {
     height: 60px;
     line-height: 60px;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 24px;
     position: fixed;
     top: 0;
     left: 0;
@@ -238,12 +275,14 @@ export default {
   }
   .noneOrder>p{
     margin-bottom: 30px;
+    font-size: 18px;
   }
   .orderMain>p{
     height: 45px;
     line-height: 45px;
     font-weight: bold;
-    padding-left: 20px;
+    padding-left: 10px;
+    font-size: 16px;
   }
   .orderMain .orderCon{
     width: 100%;
@@ -254,12 +293,14 @@ export default {
     left: 0;
   }
   .orderMain .orderItem{
-    width: 82%;
-    margin-left: 5%;
-    padding: 15px;
+    width: 100%;
+    padding: 10px;
     border: 1px solid #ebebeb;
     border-radius: 5px;
     margin-bottom: 20px;
+  }
+  .orderMain .orderItem .tabItemTwo{
+    font-size: 18px;
   }
   .orderMain .orderItem .tabItemTwo .mustG{
     display: inline-block;
@@ -279,6 +320,7 @@ export default {
   }
   .orderMain .orderItem .disDetail .disDetailLeft{
     font-weight: bold;
+    font-size: 16px;
   }
   .orderMain .orderItem .disDetail .disDetailLeft>span{
     color: #fd9153;
@@ -297,8 +339,8 @@ export default {
   }
   .btns .btnsBigx{
     width: 40%;
-    height: 100px;
-    line-height: 100px;
+    height: 80px;
+    line-height: 80px;
     background: #747474;
     color: #fff;
     border: none;
@@ -309,7 +351,7 @@ export default {
   }
   .btns .btnsSmallx{
     width: 30%;
-    height: 100px;
+    height: 80px;
     border: none;
     color: #fff;
     background: #494b5a;
@@ -318,7 +360,7 @@ export default {
   }
   .btnsSmall{
     width: 30%;
-    height: 100px;
+    height: 80px;
     border: none;
     color: #fff;
     background: #494b5a;
@@ -327,8 +369,8 @@ export default {
   }
   .btnTwo  .btnsBigs{
     width: 70%;
-    height: 100px;
-    line-height: 70px;
+    height: 80px;
+    line-height: 60px;
     background: #fd9153;
     color: #fff;
     border: none;

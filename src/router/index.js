@@ -8,6 +8,7 @@ import deliver from '@/components/deliver'
 import notReceive from '@/components/notReceive'
 import error from '@/components/error'
 import cancelTrip from '@/components/cancelTrip'
+import layer from '@/components/layer'
 
 import 'bootstrap/dist/css/bootstrap.css'
 
@@ -55,6 +56,11 @@ export default new Router({
       path: '/cancelTrip',
       name: 'cancelTrip',
       component: cancelTrip
+    },
+    {
+      path: '/layer',
+      name: 'layer',
+      component: layer
     }
   ]
 })

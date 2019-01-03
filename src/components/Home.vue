@@ -1,6 +1,6 @@
 <template id="contact">
   <div class="container indexCon">
-    <div class="topBox" ref="aaa">
+    <div class="topBox">
       首页
     </div>
     <div class="indexMain">
@@ -30,12 +30,15 @@
     <!--<iframe id="geoPage" width=0 height=0 frameborder=0  style="display:none;" scrolling="no"-->
             <!--src="https://apis.map.qq.com/tools/geolocation?key=ETBBZ-TOMRF-MTPJB-NWRP2-BAGU5-D6FV5&referer=myapp">-->
     <!--</iframe>-->
+    <layer ref="layer"></layer>
   </div>
 </template>
 <script>
+  import layer from "../components/layer"
   export default {
   //注册组件
   components: {
+    layer
   },
   name: 'Home',
   data () {
@@ -59,6 +62,7 @@
   },
   mounted () {
     var that = this;
+    let layer = this.$refs.layer;
     that.ws.onmessage = function(evt)
     {
       let data = JSON.parse(evt.data);
@@ -76,12 +80,26 @@
       else if (data.status_code == 422){
         switch (data.action) {
           case 'active' :
-            alert('active Error');
+            layer.open({
+              type: 1,
+              content: 'active Error',  // 内容
+              time: 3, // 几秒后自动关闭 默认 2
+              callback () {  // 几秒后自动关闭 回掉
+                console.log('弹框消失')
+              }
+            })
             break;
         }
       }
       else{
-        alert('系统错误');
+        layer.open({
+          type: 1,
+          content: '系统错误'+data.status_code,  // 内容
+          time: 3, // 几秒后自动关闭 默认 2
+          callback () {  // 几秒后自动关闭 回掉
+            console.log('弹框消失')
+          }
+        })
       }
     };
     // window.addEventListener('message', function(event) {
@@ -134,6 +152,10 @@
 <style scoped>
   .container{
     width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0;
   }
   .container .topBox{
     width: 100%;
@@ -142,15 +164,14 @@
     text-align: center;
     border-bottom: 1px solid #ebebeb;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 24px;
   }
   .container .indexMain{
     padding: 0 20px;
-    /*margin-top: 61px;*/
   }
   .container .indexMain .cartNum{
     border-bottom: 1px solid #ebebeb;
-    padding: 20px 0;
+    padding: 13px 0 15px;
   }
   .container .indexMain .cartNum>span{
     padding: 3px 21px;
@@ -158,13 +179,14 @@
     border-radius: 5px;
     font-size: 16px;
     float: right;
-    margin-top: 10px;
+    margin-top: 5px;
+    font-weight: bolder;
   }
 
   .container .indexMain .orderNum{
     display: flex;
     flex-direction: row;
-    padding: 20px 0;
+    padding: 10px 0;
     border-bottom: 1px solid #ebebeb;
   }
   .container .indexMain .orderNum .orderNumLeft{
@@ -174,7 +196,7 @@
   }
   .container .indexMain .orderNum .orderNumLeft>div,.container .indexMain .orderNum .orderNumRight>div,.container .indexMain .orderTotle>div{
     color: #fd9153;
-    font-size: 28px;
+    font-size: 34px;
     font-weight: bold;
   }
   .container .indexMain .orderNum .orderNumLeft>p,.container .indexMain .orderNum .orderNumRight>p,.container .indexMain .orderTotle>p{
@@ -187,7 +209,7 @@
   }
   .container .indexMain .orderTotle{
     text-align: center;
-    padding-top: 15px;
+    padding-top: 10px;
   }
   .btns{
     position: fixed;
@@ -197,8 +219,8 @@
   }
   .btns .btnsBigS{
     width: 70%;
-    height: 100px;
-    line-height: 70px;
+    height: 80px;
+    line-height: 80px;
     background: #fd9153;
     color: #fff;
     border: none;
@@ -208,7 +230,7 @@
   }
   .btns .btnsSmallS{
     width: 30%;
-    height: 100px;
+    height: 80px;
     border: none;
     color: #fff;
     background: #494b5a;

@@ -22,7 +22,7 @@
             {{phone}}
           </div>
         </div>
-        <div class="Navigation" style="background: #3cbca3;" @click="tapPhone({phone})">
+        <div class="Navigation" style="background: #3cbca3;" @click="tapPhone()">
           拨号
         </div>
       </div>
@@ -31,12 +31,18 @@
       <button class="btnsBig" @click="tapDeliver">已上车</button>
       <button class="btnsSmall" @click="tapNoReceive">未接到</button>
     </div>
+    <layer ref="layer"></layer>
   </div>
 </template>
 
 <script>
+  import layer from "../components/layer"
     export default {
       name: "receivers",
+      //注册组件
+      components: {
+        layer
+      },
       data(){
           return{
             fromLocation:"",
@@ -45,6 +51,7 @@
       },
       mounted(){
         var that = this;
+        let layer = this.$refs.layer;
         var orderInfo = JSON.parse(window.localStorage.getItem("orderInfo"));
         that.fromLocation = orderInfo.order.from_address;
         that.phone = orderInfo.user.phone;
@@ -70,12 +77,26 @@
           else if (data.status_code == 422){
             switch (data.action) {
               case 'userCancel' :
-                alert('userCancel Error');
+                layer.open({
+                  type: 1,
+                  content: 'userCancel Error',  // 内容
+                  time: 3, // 几秒后自动关闭 默认 2
+                  callback () {  // 几秒后自动关闭 回掉
+                    console.log('弹框消失')
+                  }
+                })
                 break;
             }
           }
           else{
-            alert('系统错误');
+            layer.open({
+              type: 1,
+              content: '系统错误',  // 内容
+              time: 3, // 几秒后自动关闭 默认 2
+              callback () {  // 几秒后自动关闭 回掉
+                console.log('弹框消失')
+              }
+            })
           }
         }
       },
@@ -92,9 +113,10 @@
           });
         },
         //拨号
-        tapPhone:function(phoneNumber){
-          window.location.href = 'tel://' + phoneNumber;
-          console.log("待真机测试");
+        tapPhone:function(){
+          var that = this;
+          window.location.href = 'tel://' + that.phone;
+          console.log("拨打电话，真机测试完毕");
         },
         //点击未接到
         tapNoReceive:function () {
@@ -103,7 +125,15 @@
         },
         //导航
         navigationBtn:function () {
-          alert("功能建设中...");
+          let layer = this.$refs.layer;
+          layer.open({
+            type: 1,
+            content: '功能建设中...',  // 内容
+            time: 3, // 几秒后自动关闭 默认 2
+            callback () {  // 几秒后自动关闭 回掉
+              console.log('弹框消失')
+            }
+          })
         }
       }
     }
@@ -118,6 +148,7 @@
     left: 0;
     padding: 0;
     background: #ebebeb;
+    font-size: 16px;
   }
   .container .topBox{
     width: 100%;
@@ -126,7 +157,7 @@
     height: 60px;
     line-height: 60px;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 24px;
     position: fixed;
     top: 0;
     left: 0;
@@ -165,6 +196,7 @@
     text-align: center;
     background: #fd9153;
     color: #fff;
+    font-size: 18px;
   }
   .btns{
     position: fixed;
@@ -174,7 +206,7 @@
   }
   .btns .btnsBig{
     width: 70%;
-    height: 100px;
+    height: 80px;
     line-height: 70px;
     background: #fd9153;
     color: #fff;
@@ -185,7 +217,7 @@
   }
   .btns .btnsSmall{
     width: 30%;
-    height: 100px;
+    height: 80px;
     border: none;
     color: #fff;
     background: #494b5a;
@@ -194,7 +226,7 @@
   }
   .btns .btnsBigMore{
     width: 100%;
-    height: 100px;
+    height: 80px;
     line-height: 70px;
     background: #fd9153;
     color: #fff;
