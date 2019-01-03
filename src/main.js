@@ -15,7 +15,10 @@ Vue.prototype.$httpPost = function (url,data,callBack) {
   var token = window.localStorage.getItem("token");
   this.$http.post(
     "https://taxi.shangheweiman.com/api/driver"+url,
-    data,{emulateJSON:true},{headers:{ 'Authorization': "Bearer " + token}})
+    {
+      params : data
+    }
+    )
     .then(data => {
       console.log('请求数据成功:' + url + ':', data);
       callBack(data);
@@ -46,7 +49,14 @@ Vue.prototype.$httpGet = function (url,data,callBack) {
 Vue.prototype.$httpGetUrl = function (url,data,callBack) {
   var token = window.localStorage.getItem("token");
   this.$http.get(
-    url,data,{"headers":{'Authorization': "Bearer " + token}})
+    url,
+    {
+      params : data,
+      headers :{
+        'Authorization': "Bearer " + token
+      }
+    }
+  )
     .then(data => {
       console.log('请求数据成功:' + url + ':', data);
       callBack(data);
@@ -54,7 +64,49 @@ Vue.prototype.$httpGetUrl = function (url,data,callBack) {
       console.log('接口请求数据失败'+ url + ':', data);
     });
 };
-Vue.prototype.ws =new WebSocket("ws://taxi.shangheweiman.com:5302?token=1");
+Vue.prototype.isError = false;
+//判断是否已经有token值，有的话连接socket，没有的话获取登录授权token
+Vue.prototype.token = window.localStorage.getItem('token');
+  if(Vue.prototype.token != null) {
+    Vue.prototype.ws =  new WebSocket("ws://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
+  }else {
+    //原生js获取后台接口数据
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+      console.log(xmlhttp);
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 201) {
+        Vue.prototype.isError = false;
+        var data = JSON.parse(xmlhttp.responseText);
+        console.log("获取登录授权token:",data);
+        window.localStorage.removeItem("token");
+        window.localStorage.setItem("token",data.access_token);
+        Vue.prototype.ws = new WebSocket("ws://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
+      }else
+      {
+        //跳转设备禁用页面的判断依据
+        Vue.prototype.isError = true;
+      }
+    };
+    xmlhttp.open("POST",'https://taxi.shangheweiman.com/api/driver/authorizations',false);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    Vue.prototype.myImei = "787656,121212121";//用于测试的imei
+    // Vue.prototype.myImei = plus.device.imei;//真实的imei
+      if(Vue.prototype.myImei !=null && Vue.prototype.myImei !=undefined){
+        if(Vue.prototype.myImei.indexOf(",") != -1){
+          Vue.prototype.myImei = Vue.prototype.myImei.split(",")[0];
+          var seImei = Vue.prototype.myImei.split(",")[1];
+        }else{
+          Vue.prototype.myImei = seImei;
+        }
+      }
+      try{
+        xmlhttp.send("imei="+Vue.prototype.myImei);
+      }catch (e) {
+        //跳转设备禁用页面的判断依据
+        Vue.prototype.isError = true;
+        Vue.prototype.ws = new WebSocket("ws://taxi.shangheweiman.com:5302");s
+      }
+  }
 Vue.prototype.wsStatus = false;
 Vue.prototype.ws.onopen=function (evt) {
   console.log("建立连接");
@@ -83,15 +135,13 @@ Vue.prototype.wsSeed = function (obj) {
     let oldmsg = Vue.prototype.ws.onmessage;
     let oldopen = Vue.prototype.ws.onopen;
     let oldclose = Vue.prototype.ws.onclose;
-    Vue.prototype.ws =new WebSocket("ws://taxi.shangheweiman.com:5302?token=1");
+    Vue.prototype.ws =new WebSocket("ws://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
     Vue.prototype.ws.onopen = oldopen;
     Vue.prototype.ws.onmessage = oldmsg;
     Vue.prototype.ws.onclose = oldclose;
     alert("连接成功，请再次点击上班");
   }
 };
-
-
 //心跳包定时器
 Vue.prototype.bTimer = "";
 Vue.prototype.setBeat = function(){
@@ -145,4 +195,3 @@ new Vue({
   template: '<App/>',
   components: { App }
 });
-

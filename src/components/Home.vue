@@ -48,21 +48,14 @@
     }
   },
   created() {
-        // //判断浏览器是否支持imei
-    		// if(window.plus){
-        //   // this.getLoginToken();
-        // }else{
-        //   // document.addEventListener("plusready",plusReady,false);
-        //   //	跳转到系统错误页面
-        //   //  this.$router.push({name:"error"});
-        // }
-    var token = window.localStorage.getItem("token");
-    if(token == undefined || token == null) {
-      this.getLoginToken();
-    }else {
-      this.getUserInfo();
-      this.getIndexOrder();
+    console.log("this.isError",this.isError);
+    //如果imei未在后台设置，跳转设备禁用页面
+    if(this.isError){
+      this.$router.push({name:"error"});
     }
+    this.getUserInfo();
+    this.getIndexOrder();
+
   },
   mounted () {
     var that = this;
@@ -108,27 +101,6 @@
           "lat":"36.092484",
           "lng":"120.380966"
         }
-      });
-
-    },
-    // 登录授权token
-    getLoginToken:function () {
-      var that = this;
-      var myImei = "123456,121212121";//用于测试的imei
-      //var myImei = plus.device.imei;//真实的imei
-      if(myImei !=null && myImei !=undefined){
-        if(myImei.indexOf(",") != -1){
-          myImei = myImei.split(",")[0];
-          var seImei = myImei.split(",")[1];
-        }else{
-          myImei = myImei;
-        }
-      }
-      this.$httpPost("/authorizations",{"imei":myImei},function (data) {
-        window.localStorage.removeItem("token");
-        window.localStorage.setItem("token",data.data.access_token);
-        that.getUserInfo();
-        that.getIndexOrder();
       });
     },
     //获取用户信息
