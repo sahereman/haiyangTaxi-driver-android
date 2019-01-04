@@ -27,9 +27,6 @@
       <button class="btnsBigS" @click="tapWorking()">上班</button>
       <button class="btnsSmallS" @click="tapOrderList()">接单<br/>记录</button>
     </div>
-    <!--<iframe id="geoPage" width=0 height=0 frameborder=0  style="display:none;" scrolling="no"-->
-            <!--src="https://apis.map.qq.com/tools/geolocation?key=ETBBZ-TOMRF-MTPJB-NWRP2-BAGU5-D6FV5&referer=myapp">-->
-    <!--</iframe>-->
     <layer ref="layer"></layer>
   </div>
 </template>
@@ -102,11 +99,10 @@
         })
       }
     };
-    // window.addEventListener('message', function(event) {
-    //   // 接收位置信息
-    //   var loc = event.data;
-    //   console.log('location', loc);
-    // }, false);
+
+    this.coordinate();
+
+
   },
   methods:{
     //上班
@@ -146,6 +142,27 @@
       var that = this;
       that.$router.push({name:'orderList',params:{pageFrom:"home"}});
     },
+    /**用腾讯获取坐标**/
+    coordinate:function (){
+    var geolocation = new qq.maps.Geolocation("ETBBZ-TOMRF-MTPJB-NWRP2-BAGU5-D6FV5", "海阳出租车-司机端");
+    var options = {timeout: 8000};
+    geolocation.getLocation(that.sucCallback, that.showErr, options);
+  },
+
+  //定位成功回调
+    sucCallback:function (position){
+    var mapInfo = JSON.stringify(position, null, 4);
+    var jsonMapInfo = eval('('+mapInfo+')');
+    alert("腾讯经度为:"+jsonMapInfo.lng+",腾讯纬度为:"+jsonMapInfo.lat);
+    // init();
+    // var latLng = new qq.maps.LatLng(jsonMapInfo.lat, jsonMapInfo.lng);
+    // citylocation.searchCityByLatLng(latLng);
+  },
+
+  //定位失败回调
+    showErr:function (position){
+    alert("定位失败"+JSON.stringify(position));
+  }
   }
 }
 </script>

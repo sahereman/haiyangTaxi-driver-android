@@ -11,7 +11,7 @@ Vue.config.productionTip = false;
 
 //公共方法
 //post请求数据方法
-Vue.prototype.$httpPost = function (url,data,callBack) {
+Vue.prototype.httpPost = function (url,data,callBack) {
   var token = window.localStorage.getItem("token");
   this.$http.post(
     "https://taxi.shangheweiman.com/api/driver"+url,
@@ -185,22 +185,6 @@ Vue.prototype.setBeat = function(){
 //     Vue.prototype.wsSeed(obj);
 //   },3000);
 // };
-
-/**用腾讯获取坐标**/
-Vue.prototype.coordinate=function(){
-  var geolocation = new qq.maps.Geolocation("ETBBZ-TOMRF-MTPJB-NWRP2-BAGU5-D6FV5", "mapqq");
-  geolocation.getLocation(Vue.prototype.sucCallback, Vue.prototype.showErr);
-};
-//定位成功回调
-Vue.prototype.sucCallback=function(position){
-  var mapInfo = JSON.stringify(position, null, 4);
-  var jsonMapInfo = eval('('+mapInfo+')');
-  console.log("腾讯经度为lng:"+jsonMapInfo.lng+",腾讯纬度为lat:"+jsonMapInfo.lat);
-};
-//定位失败回调
-Vue.prototype.showErr=function(){
-  alert("定位失败");
-};
 /* 定义实例 */
 new Vue({
   el: '#app',
