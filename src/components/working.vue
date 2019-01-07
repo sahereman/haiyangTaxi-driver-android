@@ -116,12 +116,14 @@ export default {
                     console.log('弹框消失')
                   }
                 })
-                alert("将这笔订单在页面删除");
                 //（已被抢单）将这笔订单在页面删除,关掉这笔订单的定时器
-                let order = that.wOrderList.find(function (order) {
-                  alert("zzz");
-                  return order.orderKey == that.orderKey;
-                });
+                //用for循环写
+                var order="";
+                for(var i=0; i<that.wOrderList.length; i++ ){
+                  if(that.wOrderList[i].orderKey == that.orderKey){
+                    order = that.wOrderList[i];
+                  }
+                }
                 let index = that.wOrderList.indexOf(order);
                 window.clearInterval(that.wOrderList[index].Interval);
                 that.wOrderList.splice(index,1);
@@ -204,39 +206,25 @@ export default {
     //订单20秒定时器
     orderTimer:function (orderKey) {
       var that = this;
-      console.log(that.wOrderList);
       if(that.wOrderList.length>0){
         //用for循环写
         var order="";
         for(var i=0; i<that.wOrderList.length; i++ ){
-          console.log(that.wOrderList[i],orderKey,that.wOrderList[i].orderKey);
           if(that.wOrderList[i].orderKey == orderKey){
-            console.log("123");
             order = that.wOrderList[i];
           }
         }
-        console.log("order",order);
-        // var order = that.wOrderList.find(function (order) {
-        //   return order.orderKey == orderKey;
-        // });
         var orderIndex = that.wOrderList.indexOf(order);
-        alert("orderIndex:"+orderIndex);
         that.wOrderList[orderIndex].Interval = setInterval(function () {
           //用for循环写
           var order="";
           for(var i=0; i<that.wOrderList.length; i++ ){
-            console.log(that.wOrderList[i],orderKey,that.wOrderList[i].orderKey);
             if(that.wOrderList[i].orderKey == orderKey){
-              console.log("123");
               order = that.wOrderList[i];
             }
           }
-          // var order = that.wOrderList.find(function (order) {
-          //   return order.orderKey == orderKey;
-          // });
           var index = that.wOrderList.indexOf(order);
           var needTime = that.wOrderList[index].needTime;
-          console.log(orderKey,index,needTime);
           if(needTime <= 0)
           {
             clearInterval(that.wOrderList[index].Interval);
