@@ -68,7 +68,7 @@ Vue.prototype.isError = false;
 //判断是否已经有token值，有的话连接socket，没有的话获取登录授权token
 Vue.prototype.token = window.localStorage.getItem('token');
   if(Vue.prototype.token != null) {
-    Vue.prototype.ws =  new WebSocket("ws://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
+    Vue.prototype.ws =  new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
   }else {
     //原生js获取后台接口数据
     var xmlhttp = new XMLHttpRequest();
@@ -78,9 +78,9 @@ Vue.prototype.token = window.localStorage.getItem('token');
         Vue.prototype.isError = false;
         var data = JSON.parse(xmlhttp.responseText);
         console.log("获取登录授权token:",data);
-        window.localStorage.removeItem("token");
+        // window.localStorage.removeItem("token");
         window.localStorage.setItem("token",data.access_token);
-        Vue.prototype.ws = new WebSocket("ws://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
+        Vue.prototype.ws = new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
       }else
       {
         //跳转设备禁用页面的判断依据
@@ -89,35 +89,23 @@ Vue.prototype.token = window.localStorage.getItem('token');
     };
     xmlhttp.open("POST",'https://taxi.shangheweiman.com/api/driver/authorizations',false);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    Vue.prototype.myImei = "898859,121212121";//用于测试的imei 627943    867109030017439 898859
+    Vue.prototype.myImei = "867109030017439";//用于测试的imei 627943    867109030017439 898859
     // H5 plus事件处理
-    // Vue.prototype.plusReady=function(){
-    //   alert( "IMEI1: " + plus.device.imei );
-    //   alert("window.plus1",window.plus);
-    //   Vue.prototype.myImei = plus.device.imei;//真实的imeis
-    // };
-    // if(window.plus){
-    //   Vue.prototype.plusReady();
-    // }else{
-    //   document.addEventListener("plusready",function () {
-    //     alert( "IMEI2: " + plus.device.imei );
-    //     Vue.prototype.myImei = plus.device.imei;//真实的imeis
-    //   },false);
-    // }
+    // Vue.prototype.myImei = plus.device.imei;
+      alert("---"+Vue.prototype.myImei);
       if(Vue.prototype.myImei !=null && Vue.prototype.myImei !=undefined){
         if(Vue.prototype.myImei.indexOf(",") != -1){
           Vue.prototype.myImei = Vue.prototype.myImei.split(",")[0];
           var seImei = Vue.prototype.myImei.split(",")[1];
-        }else{
-          Vue.prototype.myImei = seImei;
         }
       }
       try{
+        alert("myImei:"+Vue.prototype.myImei);
         xmlhttp.send("imei="+Vue.prototype.myImei);
       }catch (e) {
         //跳转设备禁用页面的判断依据
         Vue.prototype.isError = true;
-        Vue.prototype.ws = new WebSocket("ws://taxi.shangheweiman.com:5302");
+        Vue.prototype.ws = new WebSocket("wss://taxi.shangheweiman.com:5302");
       }
   }
 Vue.prototype.wsStatus = false;
@@ -133,8 +121,6 @@ Vue.prototype.ws.onclose=function (evt) {
   Vue.prototype.wsStatus = false;
   // 关闭心跳包计时器
   clearInterval(Vue.prototype.bTimer);
-  //关闭更新位置计时器
-  clearInterval(Vue.prototype.locaTimer);
 };
 //封装scoket发送函数
 Vue.prototype.wsSeed = function (obj) {
@@ -148,7 +134,7 @@ Vue.prototype.wsSeed = function (obj) {
     let oldmsg = Vue.prototype.ws.onmessage;
     let oldopen = Vue.prototype.ws.onopen;
     let oldclose = Vue.prototype.ws.onclose;
-    Vue.prototype.ws =new WebSocket("ws://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
+    Vue.prototype.ws =new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
     Vue.prototype.ws.onopen = oldopen;
     Vue.prototype.ws.onmessage = oldmsg;
     Vue.prototype.ws.onclose = oldclose;
@@ -166,25 +152,6 @@ Vue.prototype.setBeat = function(){
 
   },3000);
 };
-//更新位置定时器
-// Vue.prototype.locaTimer = "";
-// Vue.prototype.setLocation = function(){
-//   window.addEventListener('message', function(event) {
-//     // 接收位置信息
-//     var loc = event.data;
-//     console.log('location', loc);
-//   }, false);
-//   Vue.prototype.locaTimer = setInterval(function () {
-//     var obj = {
-//       "action":"location",
-//       "data":{
-//         "lat":"36.111114",
-//         "lng":"120.444444"
-//       }
-//     };
-//     Vue.prototype.wsSeed(obj);
-//   },3000);
-// };
 /* 定义实例 */
 new Vue({
   el: '#app',
