@@ -5,9 +5,16 @@
     </div>
     <div class="errMain">
       <img src="../assets/warning@3x.png"/>
-      <p>您的设备因到期已被禁用</p>
+      <p>您的设备因到期已被禁用!</p>
       <div>请联系客服<span>400-100-5646</span></div>
       <div>已进行激活</div>
+      <div class="imeiBox">
+        <table>设备ID:</table>
+        <div>
+          <div>12121212121212</div>
+          <div>12121212121212</div>
+        </div>
+      </div>
     </div>
     <div class="btns">
       <button class="btnsBigMore" @click="activated">已激活</button>
@@ -20,23 +27,32 @@
         name: "error",
         data(){
           return{
-            imei:""
+            imei:"",
+            imeiTotalArr:[]
           }
         },
-      create(){
+      mounted(){
         // H5 plus事件处理
-        function plusReady(){
-          var that = this;
-          that.imei = plus.device.imei;
-          // alert( "IMEI: " + plus.device.imei );
-        }
+        console.log(this);
+        this.plusReady();
         if(window.plus){
-          plusReady();
+          this.plusReady();
         }else{
-          document.addEventListener("plusready",plusReady,false);
+          document.addEventListener("plusready",function () {
+            alert( "IMEI!!!!!: " + plus.device.imei );
+          },false);
         }
       },
       method:{
+        plusReady: function (){
+            var that = this;
+            // that.imei = plus.device.imei;
+            // alert( "IMEI=======: " + plus.device.imei );
+            var testImei = "855109030017439,1121212";
+            var imeiArr = testImei.split(",");
+            // that.imeiTotalArr = imeiArr;
+            console.log(that);
+          },
         activated:function(){
           this.getLoginToken();
         },
@@ -82,7 +98,10 @@
   }
   .errMain{
     text-align: center;
-    padding-top: 30px;
+    padding-top: 20px;
+  }
+  .errMain>img{
+    width: 40px;
   }
   .errMain>p{
     font-weight: bold;
@@ -90,6 +109,22 @@
   }
   .errMain>div{
     color: #a4a4a4;
+  }
+  .errMain .imeiBox{
+    padding-left: 70px;
+    font-size: 12px;
+    margin-top: 10px;
+    color: #717171;
+  }
+  .errMain .imeiBox>table{
+    float: left;
+    margin-right: 10px;
+  }
+  .errMain .imeiBox>div{
+    float: left;
+  }
+  .errMain .imeiBox>div>div:not(:first-child){
+    margin-top: 5px;
   }
   .btns{
     position: fixed;

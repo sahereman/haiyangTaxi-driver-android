@@ -28,6 +28,7 @@
       <button class="btnsSmallS" @click="tapOrderList()">接单<br/>记录</button>
     </div>
     <layer ref="layer"></layer>
+    <button @click="clearImei()">123</button>
   </div>
 </template>
 <script>
@@ -44,7 +45,10 @@
       todayOrder:"",
       yesterdayOrder:"",
       totalOrder:"",
-      locaTimer:""
+      locaTimer:null,
+      lng:"",
+      lat:"",
+      routerParams:""
     }
   },
   created() {
@@ -55,7 +59,6 @@
     }
     this.getUserInfo();
     this.getIndexOrder();
-
   },
   mounted () {
     var that = this;
@@ -69,7 +72,7 @@
         switch (data.action) {
           case 'active' :
             //实时显示位置
-            // that.setLocation();
+            that.setLocation();
             that.$router.push({name:"working"});
             break;
         }
@@ -99,21 +102,24 @@
         })
       }
     };
-
-    this.coordinate();
-
+    //获取手机坐标,用于发送上班请求
+    that.coordinate();
 
   },
   methods:{
+    clearImei:function(){
+      window.localStorage.removeItem("token");
+    },
     //上班
     tapWorking:function () {
       var that = this;
-      // //发送上班请求
+      alert(window.localStorage.getItem("lat")+"==="+window.localStorage.getItem("lng"));
+      // 发送上班请求
       that.wsSeed({
         "action":"active",
         "data":{
-          "lat":"36.092484",
-          "lng":"120.380966"
+          "lat":window.localStorage.getItem("lat"),
+          "lng":window.localStorage.getItem("lng")
         }
       });
     },
@@ -142,27 +148,6 @@
       var that = this;
       that.$router.push({name:'orderList',params:{pageFrom:"home"}});
     },
-    /**用腾讯获取坐标**/
-    coordinate:function (){
-    var geolocation = new qq.maps.Geolocation("ETBBZ-TOMRF-MTPJB-NWRP2-BAGU5-D6FV5", "海阳出租车-司机端");
-    var options = {timeout: 8000};
-    geolocation.getLocation(that.sucCallback, that.showErr, options);
-  },
-
-  //定位成功回调
-    sucCallback:function (position){
-    var mapInfo = JSON.stringify(position, null, 4);
-    var jsonMapInfo = eval('('+mapInfo+')');
-    alert("腾讯经度为:"+jsonMapInfo.lng+",腾讯纬度为:"+jsonMapInfo.lat);
-    // init();
-    // var latLng = new qq.maps.LatLng(jsonMapInfo.lat, jsonMapInfo.lng);
-    // citylocation.searchCityByLatLng(latLng);
-  },
-
-  //定位失败回调
-    showErr:function (position){
-    alert("定位失败"+JSON.stringify(position));
-  }
   }
 }
 </script>
