@@ -146,8 +146,6 @@ export default {
         })
       }
     }
-
-
   },
   methods:{
     //点击订单选项
@@ -196,6 +194,7 @@ export default {
       });
       clearInterval(that.bTimer);
       clearInterval(that.locaTimer);
+
       this.$router.push({name:"Home"});
     },
     //点击接单记录

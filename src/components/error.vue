@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="btns">
-      <button class="btnsBigMore" @click="activated">已激活</button>
+      <button class="btnsBigMore" @click="activated()">已激活</button>
     </div>
   </div>
 </template>
@@ -33,10 +33,19 @@
         },
       mounted(){
         // H5 plus事件处理
-        console.log(this);
+
+        this.plusReady = function () {
+          var that = this;
+          // that.imei = plus.device.imei;
+          var testImei = "855109030017439,1121212";
+          var imeiArr = testImei.split(",");
+          that.imeiTotalArr = imeiArr;
+          console.log("====",that.imeiTotalArr);
+        }
         this.plusReady();
+
         if(window.plus){
-          this.plusReady();
+          // this.plusReady();
         }else{
           document.addEventListener("plusready",function () {
             alert( "IMEI!!!!!: " + plus.device.imei );
@@ -44,15 +53,6 @@
         }
       },
       method:{
-        plusReady: function (){
-            var that = this;
-            // that.imei = plus.device.imei;
-            // alert( "IMEI=======: " + plus.device.imei );
-            var testImei = "855109030017439,1121212";
-            var imeiArr = testImei.split(",");
-            // that.imeiTotalArr = imeiArr;
-            console.log(that);
-          },
         activated:function(){
           this.getLoginToken();
         },

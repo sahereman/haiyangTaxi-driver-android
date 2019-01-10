@@ -28,7 +28,6 @@
       <button class="btnsSmallS" @click="tapOrderList()">接单<br/>记录</button>
     </div>
     <layer ref="layer"></layer>
-    <button @click="clearImei()">123</button>
   </div>
 </template>
 <script>
@@ -56,6 +55,7 @@
     //如果imei未在后台设置，跳转设备禁用页面
     if(this.isError){
       this.$router.push({name:"error"});
+      return false;
     }
     this.getUserInfo();
     this.getIndexOrder();
@@ -107,13 +107,10 @@
 
   },
   methods:{
-    clearImei:function(){
-      window.localStorage.removeItem("token");
-    },
     //上班
     tapWorking:function () {
       var that = this;
-      alert(window.localStorage.getItem("lat")+"==="+window.localStorage.getItem("lng"));
+      //alert(window.localStorage.getItem("lat")+"==="+window.localStorage.getItem("lng"));
       // 发送上班请求
       that.wsSeed({
         "action":"active",
