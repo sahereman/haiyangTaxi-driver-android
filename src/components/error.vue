@@ -11,13 +11,12 @@
       <div class="imeiBox">
         <table>设备ID:</table>
         <div>
-          <div>12121212121212</div>
-          <div>12121212121212</div>
+          <div>{{imei}}</div>
         </div>
       </div>
     </div>
     <div class="btns">
-      <button class="btnsBigMore" @click="activated()">已激活</button>
+      <button class="btnsBigMore" onclick="window.AndroidWebView.restartApp()">已激活</button>
     </div>
   </div>
 </template>
@@ -27,58 +26,21 @@
         name: "error",
         data(){
           return{
-            imei:"",
-            imeiTotalArr:[]
+            imei:""
           }
         },
       mounted(){
-        // H5 plus事件处理
-
         this.plusReady = function () {
           var that = this;
-          // that.imei = plus.device.imei;
-          var testImei = "855109030017439,1121212";
+          var testImei = window.AndroidWebView.getImei();
           var imeiArr = testImei.split(",");
-          that.imeiTotalArr = imeiArr;
-          console.log("====",that.imeiTotalArr);
+          that.imei = imeiArr[0];
         }
-        this.plusReady();
-
-        if(window.plus){
-          // this.plusReady();
+        if(window.AndroidWebView){
+          this.plusReady();
         }else{
-          document.addEventListener("plusready",function () {
-            alert( "IMEI!!!!!: " + plus.device.imei );
-          },false);
+          console.log("window.AndroidWebView未定义");
         }
-      },
-      method:{
-        activated:function(){
-          this.getLoginToken();
-        },
-        // 登录授权token
-        getLoginToken:function () {
-          var that = this;
-          // var myImei = "123456,121212121";//用于测试的imei
-          var myImei = that.imei;//真实的imei
-          if(myImei !=null && myImei !=undefined){
-            if(myImei.indexOf(",") != -1){
-              myImei = myImei.split(",")[0];
-              var seImei = myImei.split(",")[1];
-            }else{
-              myImei = myImei;
-            }
-          }
-          this.$httpPost("/authorizations",{"imei":myImei},function (data) {
-            window.localStorage.removeItem("token");
-            window.localStorage.setItem("token",data.data.access_token);
-            that.$router.push({name:'Home'});
-            //如果后台没有设置相关imei，返回401，跳转设备禁用页面
-            if(data.status == 401){
-              alert("请先去激活该设备");
-            }
-          });
-        },
       }
     }
 </script>
@@ -86,6 +48,11 @@
 <style scoped>
   .container{
     width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0;
+    font-size: 17px;
   }
   .container .topBox{
     width: 100%;
@@ -101,18 +68,18 @@
     padding-top: 20px;
   }
   .errMain>img{
-    width: 40px;
+    width: 45px;
   }
   .errMain>p{
     font-weight: bold;
-    margin: 10px 0;
+    margin: 15px 0;
   }
   .errMain>div{
     color: #a4a4a4;
   }
   .errMain .imeiBox{
-    padding-left: 70px;
-    font-size: 12px;
+    padding-left: 30%;
+    font-size: 14px;
     margin-top: 10px;
     color: #717171;
   }
