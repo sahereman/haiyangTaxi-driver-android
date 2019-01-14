@@ -9,7 +9,9 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource);
 Vue.config.productionTip = false;
 
+
 alert("浏览器内核:"+navigator.appVersion);
+
 
 
 // 常量
@@ -149,10 +151,11 @@ Vue.prototype.setLocation = function(){
 
 //判断是否已经有token值，有的话连接socket，没有的话获取登录授权token
 Vue.prototype.token = window.localStorage.getItem('token');
+Vue.prototype.nowTime = parseInt(new Date().getTime());
+Vue.prototype.expiresIn = window.localStorage.getItem('expiresIn');
 alert("token:"+Vue.prototype.token);
-
 // token存在 && 在有效期内
-if(Vue.prototype.token != null) {
+if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresIn) {
   Vue.prototype.ws =  new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
 
   //封装scoket 打开函数
@@ -179,17 +182,11 @@ if(Vue.prototype.token != null) {
     components: { App }
   });
 
-
   // 重新获取token
 }else {
-  // Vue.prototype.myImei = "855109030017439,1121212";//用于测试的imei 627943    867109030017439 898859
-  // H5 plus事件处理
-  // alert(JSON.stringify(window.plus));
-
   // H5 plus事件处理
   Vue.prototype.plusReady = function (){
-
-    Vue.prototype.myImei = Vue.prototype.devmode ? '123456' : plus.device.imei;
+    Vue.prototype.myImei = Vue.prototype.devmode ? '123456' : window.AndroidWebView.getImei();
     if(Vue.prototype.myImei !=null && Vue.prototype.myImei !=undefined){
       if(Vue.prototype.myImei.indexOf(",") != -1){
         Vue.prototype.myImei = Vue.prototype.myImei.split(",")[0];
@@ -199,9 +196,6 @@ if(Vue.prototype.token != null) {
       //原生js获取后台接口数据
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function () {
-        console.log(xmlhttp.readyState);
-        console.log(xmlhttp.status);
-
         if (xmlhttp.readyState == 4 ) {
 
           if(xmlhttp.status == 201)
@@ -210,6 +204,8 @@ if(Vue.prototype.token != null) {
             var data = JSON.parse(xmlhttp.responseText);
             alert("获取登录授权token:" + JSON.stringify(data));
             window.localStorage.setItem("token",data.access_token);
+            //将有效期（现在的时间戳+秒数）存到localStorage，用于判断token值是否过期
+            window.localStorage.setItem("expiresIn",parseInt(data.expires_in)+parseInt(new Date().getTime()));
             Vue.prototype.ws = new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
 
             //封装scoket 打开函数
@@ -275,25 +271,22 @@ if(Vue.prototype.token != null) {
         template: '<App/>',
         components: { App }
       });
-
     }
-
-
   }
 
-  if(window.plus){
+  if(window.AndroidWebView){
     Vue.prototype.plusReady();
   }else{
     if(Vue.prototype.devmode)
     {
       Vue.prototype.plusReady();
-    }
-    else
-    {
-      document.addEventListener("plusready",Vue.prototype.plusReady,false);
+    }else {
+      alert("window.AndroidWebView未定义");
     }
   }
 
 }
+
+
 
 
