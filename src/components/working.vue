@@ -231,7 +231,10 @@ export default {
           var needTime = that.wOrderList[index].needTime;
           if(needTime <= 0)
           {
+            //清除倒计时为零的计时器，将这一条订单从页面删除，将选中状态清除
             clearInterval(that.wOrderList[index].Interval);
+            that.current=-1;
+            that.acceptOrd = false;
             that.wOrderList.splice(index,1);
             if(that.wOrderList.length == 0){
               that.Waiting = true;
