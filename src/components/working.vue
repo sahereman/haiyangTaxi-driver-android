@@ -32,6 +32,10 @@
       <button class="btnsSmall orderList" @click="tapOrderList()">接单<br/>记录</button>
     </div>
     <layer ref="layer"></layer>
+    <audio controls="controls"
+           preload="auto"
+           src="../assets/music.mp3" ref="audio" style="display: none;">
+    </audio>
   </div>
 </template>
 <script>
@@ -78,6 +82,7 @@ export default {
                 if(that.nearOrderCount > 0){
                   that.orderTimer(orderKey);
                 }
+                that.$refs.audio.play();
             break;
           case 'accept' :
             //将接收的order_id存起来，用于用户已上车和已到达的时候作为参数传过去
