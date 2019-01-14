@@ -101,7 +101,7 @@ export default {
     getOrder:function (url,time) {
         var that = this;
         that.showDone = false;
-        that.$httpGetUrl(url,{params:{"date":time}},function (data) {
+        that.$httpGetUrl(url,{date:time},function (data) {
         var orderArr = data.data.data;
         if(data.data.data!=null && data.data.data!=""){
           for(var i = 0;i<orderArr.length;i++){
