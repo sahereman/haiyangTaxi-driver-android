@@ -107,6 +107,7 @@
     width: 150px;
     text-align: center;
     height: 70px;
+    line-height: 70px;
     position: fixed;
     top: 40%;
     left: 30%;
