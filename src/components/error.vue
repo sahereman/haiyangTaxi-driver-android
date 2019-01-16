@@ -78,7 +78,7 @@
     color: #a4a4a4;
   }
   .errMain .imeiBox{
-    padding-left: 30%;
+    padding-left: 23%;
     font-size: 14px;
     margin-top: 10px;
     color: #717171;

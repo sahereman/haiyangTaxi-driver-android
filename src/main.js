@@ -10,22 +10,12 @@ Vue.use(VueResource);
 Vue.config.productionTip = false;
 
 
-alert("浏览器内核:"+navigator.appVersion);
-
-
-
 // 常量
-Vue.prototype.devmode = false;
 Vue.prototype.isError = false;
 Vue.prototype.wsStatus = false;
 Vue.prototype.myImei = '';
 
 
-//dev模式
-if(confirm('dev模式'))
-{
-  Vue.prototype.devmode = true;
-}
 
 //公共方法
 //post请求数据方法
@@ -130,7 +120,7 @@ Vue.prototype.sucCallback=function (position){
 },
 //定位失败回调
   Vue.prototype.showErr=function (){
-  alert("定位失败");
+  console.log("定位失败");
 },
   //更新位置定时器
 Vue.prototype.locaTimer = "";
@@ -153,7 +143,6 @@ Vue.prototype.setLocation = function(){
 Vue.prototype.token = window.localStorage.getItem('token');
 Vue.prototype.nowTime = parseInt(new Date().getTime());
 Vue.prototype.expiresIn = window.localStorage.getItem('expiresIn');
-alert("token:"+Vue.prototype.token);
 // token存在 && 在有效期内
 if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresIn) {
   Vue.prototype.ws =  new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
@@ -186,7 +175,7 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
 }else {
   // H5 plus事件处理
   Vue.prototype.plusReady = function (){
-    Vue.prototype.myImei = Vue.prototype.devmode ? '123456' : window.AndroidWebView.getImei();
+    Vue.prototype.myImei = window.AndroidWebView.getImei();
     if(Vue.prototype.myImei !=null && Vue.prototype.myImei !=undefined){
       if(Vue.prototype.myImei.indexOf(",") != -1){
         Vue.prototype.myImei = Vue.prototype.myImei.split(",")[0];
@@ -202,10 +191,9 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
           {
             Vue.prototype.isError = false;
             var data = JSON.parse(xmlhttp.responseText);
-            alert("获取登录授权token:" + JSON.stringify(data));
             window.localStorage.setItem("token",data.access_token);
             //将有效期（现在的时间戳+秒数）存到localStorage，用于判断token值是否过期
-            window.localStorage.setItem("expiresIn",parseInt(data.expires_in)+parseInt(new Date().getTime()));
+            window.localStorage.setItem("expiresIn",parseInt(data.expires_in)*1000+parseInt(new Date().getTime()));
             Vue.prototype.ws = new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
 
             //封装scoket 打开函数
@@ -253,12 +241,8 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
       };
       xmlhttp.open("POST",'https://taxi.shangheweiman.com/api/driver/authorizations',false);
       xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-      alert("send imei :"+Vue.prototype.myImei);
       xmlhttp.send("imei="+Vue.prototype.myImei);
     }catch (e) {
-
-      alert('异常');
       console.log(e);
       //跳转设备禁用页面的判断依据
       Vue.prototype.isError = true;
@@ -277,12 +261,7 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
   if(window.AndroidWebView){
     Vue.prototype.plusReady();
   }else{
-    if(Vue.prototype.devmode)
-    {
-      Vue.prototype.plusReady();
-    }else {
-      alert("window.AndroidWebView未定义");
-    }
+      console.log("window.AndroidWebView未定义");
   }
 
 }

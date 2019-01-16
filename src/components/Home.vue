@@ -110,7 +110,6 @@
     //上班
     tapWorking:function () {
       var that = this;
-      //alert(window.localStorage.getItem("lat")+"==="+window.localStorage.getItem("lng"));
       // 发送上班请求
       that.wsSeed({
         "action":"active",

@@ -194,13 +194,11 @@ export default {
     //下班
     tapEndWork:function () {
       var that = this;
+      clearInterval(that.bTimer);
+      clearInterval(that.locaTimer);
       that.wsSeed({
         "action":"close"
       });
-      clearInterval(that.bTimer);
-      clearInterval(that.locaTimer);
-
-      this.$router.push({name:"Home"});
     },
     //点击接单记录
     tapOrderList:function () {
