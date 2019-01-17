@@ -47,7 +47,7 @@
       locaTimer:null,
       lng:"",
       lat:"",
-      routerParams:""
+      routerParams:"",
     }
   },
   created() {
@@ -72,6 +72,9 @@
         switch (data.action) {
           case 'active' :
             //实时显示位置
+            that.tapWorkingIsClick = false;
+            layer.close();
+
             that.setLocation();
             that.$router.push({name:"working"});
             break;
@@ -109,15 +112,50 @@
   methods:{
     //上班
     tapWorking:function () {
+      let layer = this.$refs.layer;
       var that = this;
-      // 发送上班请求
-      that.wsSeed({
-        "action":"active",
-        "data":{
-          "lat":window.localStorage.getItem("lat"),
-          "lng":window.localStorage.getItem("lng")
+
+      // console.log(that.MyLayer);
+      // that.MyLayer = layer;
+      // console.log(that.MyLayer);
+
+      console.log(this.tapWorkingIsClick);
+
+      if(!that.tapWorkingIsClick){
+        that.tapWorkingIsClick = true;
+
+        if(that.wsStatus == true)
+        {
+          layer.open({
+            type: 1,
+            content: '加载中...',
+          });
         }
-      });
+        else
+        {
+          layer.open({
+              type: 1,
+              content: '加载中...',  // 内容
+              time: 1, // 几秒后自动关闭 默认 2
+              callback () {  // 几秒后自动关闭 回掉
+                that.tapWorkingIsClick = false;
+                console.log("几秒后自动关闭 回掉,可以点击上班");
+              }
+            })
+        }
+
+
+        // 发送上班请求
+        that.wsSeed({
+          "action":"active",
+          "data":{
+            "lat":window.localStorage.getItem("lat"),
+            "lng":window.localStorage.getItem("lng")
+          }
+        });
+
+      }
+
     },
     //获取用户信息
     getUserInfo:function(){

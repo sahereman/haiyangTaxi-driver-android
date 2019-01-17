@@ -14,6 +14,7 @@ Vue.config.productionTip = false;
 Vue.prototype.isError = false;
 Vue.prototype.wsStatus = false;
 Vue.prototype.myImei = '';
+Vue.prototype.tapWorkingIsClick = false;
 
 
 
@@ -85,10 +86,12 @@ Vue.prototype.wsSeed = function (obj) {
     let oldmsg = Vue.prototype.ws.onmessage;
     let oldopen = Vue.prototype.ws.onopen;
     let oldclose = Vue.prototype.ws.onclose;
+
     Vue.prototype.ws =new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
     Vue.prototype.ws.onopen = oldopen;
     Vue.prototype.ws.onmessage = oldmsg;
     Vue.prototype.ws.onclose = oldclose;
+
     //alert("连接成功，请再次点击上班按钮");
   }
 };
@@ -143,6 +146,7 @@ Vue.prototype.setLocation = function(){
 Vue.prototype.token = window.localStorage.getItem('token');
 Vue.prototype.nowTime = parseInt(new Date().getTime());
 Vue.prototype.expiresIn = window.localStorage.getItem('expiresIn');
+alert("token:"+Vue.prototype.token);
 // token存在 && 在有效期内
 if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresIn) {
   Vue.prototype.ws =  new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
@@ -151,6 +155,7 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
   Vue.prototype.ws.onopen=function (evt) {
     console.log("建立连接");
     Vue.prototype.wsStatus = true;
+
     //打开心跳包计时器
     Vue.prototype.setBeat();
   };
@@ -175,7 +180,8 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
 }else {
   // H5 plus事件处理
   Vue.prototype.plusReady = function (){
-    Vue.prototype.myImei = window.AndroidWebView.getImei();
+    // Vue.prototype.myImei =  '123456';
+    Vue.prototype.myImei =  window.AndroidWebView.getImei();
     if(Vue.prototype.myImei !=null && Vue.prototype.myImei !=undefined){
       if(Vue.prototype.myImei.indexOf(",") != -1){
         Vue.prototype.myImei = Vue.prototype.myImei.split(",")[0];
@@ -191,6 +197,7 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
           {
             Vue.prototype.isError = false;
             var data = JSON.parse(xmlhttp.responseText);
+            alert("获取登录授权token:" + JSON.stringify(data));
             window.localStorage.setItem("token",data.access_token);
             //将有效期（现在的时间戳+秒数）存到localStorage，用于判断token值是否过期
             window.localStorage.setItem("expiresIn",parseInt(data.expires_in)*1000+parseInt(new Date().getTime()));
@@ -241,6 +248,7 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
       };
       xmlhttp.open("POST",'https://taxi.shangheweiman.com/api/driver/authorizations',false);
       xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      alert("send imei :"+Vue.prototype.myImei);
       xmlhttp.send("imei="+Vue.prototype.myImei);
     }catch (e) {
       console.log(e);
@@ -261,7 +269,8 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
   if(window.AndroidWebView){
     Vue.prototype.plusReady();
   }else{
-      console.log("window.AndroidWebView未定义");
+    // Vue.prototype.plusReady();
+    console.log("window.AndroidWebView未定义");
   }
 
 }
