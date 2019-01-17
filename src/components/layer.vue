@@ -8,7 +8,7 @@
             <transition name="fade">
               <div class="layermchild layermPrompts" v-if="layershow">
                 <section class="layermcont">
-                  <img class="img" :src="imgurl"/>
+                  <!--<img class="img" :src="imgurl"/>-->
                   <p class="text">{{content}}</p>
                 </section>
               </div>
