@@ -146,7 +146,7 @@ Vue.prototype.setLocation = function(){
 Vue.prototype.token = window.localStorage.getItem('token');
 Vue.prototype.nowTime = parseInt(new Date().getTime());
 Vue.prototype.expiresIn = window.localStorage.getItem('expiresIn');
-alert("token:"+Vue.prototype.token);
+
 // token存在 && 在有效期内
 if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresIn) {
   Vue.prototype.ws =  new WebSocket("wss://taxi.shangheweiman.com:5302?token="+window.localStorage.getItem('token'));
@@ -197,7 +197,6 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
           {
             Vue.prototype.isError = false;
             var data = JSON.parse(xmlhttp.responseText);
-            alert("获取登录授权token:" + JSON.stringify(data));
             window.localStorage.setItem("token",data.access_token);
             //将有效期（现在的时间戳+秒数）存到localStorage，用于判断token值是否过期
             window.localStorage.setItem("expiresIn",parseInt(data.expires_in)*1000+parseInt(new Date().getTime()));
@@ -248,7 +247,6 @@ if(Vue.prototype.token != null && Vue.prototype.nowTime < Vue.prototype.expiresI
       };
       xmlhttp.open("POST",'https://taxi.shangheweiman.com/api/driver/authorizations',false);
       xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      alert("send imei :"+Vue.prototype.myImei);
       xmlhttp.send("imei="+Vue.prototype.myImei);
     }catch (e) {
       console.log(e);
