@@ -117,13 +117,16 @@ Vue.prototype.coordinate=function (){
 Vue.prototype.sucCallback=function (position){
   var mapInfo = JSON.stringify(position, null, 4);
   var jsonMapInfo = eval('('+mapInfo+')');
-  window.localStorage.setItem("lat",jsonMapInfo.lat);
-  window.localStorage.setItem("lng",jsonMapInfo.lng);
+  console.log("进入定位成功回调"+JSON.stringify(jsonMapInfo));
+  if(jsonMapInfo.accuracy<=200){
+    window.localStorage.setItem("lat",jsonMapInfo.lat);
+    window.localStorage.setItem("lng",jsonMapInfo.lng);
+  }
   console.log("腾讯经度为:"+jsonMapInfo.lng+",腾讯纬度为:"+jsonMapInfo.lat);
 },
 //定位失败回调
   Vue.prototype.showErr=function (){
-  console.log("定位失败");
+    console.log("定位失败");
 },
   //更新位置定时器
 Vue.prototype.locaTimer = "";

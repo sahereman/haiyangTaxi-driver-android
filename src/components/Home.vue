@@ -66,7 +66,7 @@
     that.ws.onmessage = function(evt)
     {
       let data = JSON.parse(evt.data);
-      console.log(data);
+      console.log("data:"+JSON.stringify(data));
       if(data.status_code == 200)
       {
         switch (data.action) {
@@ -115,12 +115,6 @@
       let layer = this.$refs.layer;
       var that = this;
 
-      // console.log(that.MyLayer);
-      // that.MyLayer = layer;
-      // console.log(that.MyLayer);
-
-      console.log(this.tapWorkingIsClick);
-
       if(!that.tapWorkingIsClick){
         that.tapWorkingIsClick = true;
 
@@ -143,16 +137,27 @@
               }
             })
         }
+        if(window.localStorage.getItem("lat")!=null && window.localStorage.getItem("lng")!=null){
+          // 发送上班请求
+          that.wsSeed({
+            "action":"active",
+            "data":{
+              "lat":window.localStorage.getItem("lat"),
+              "lng":window.localStorage.getItem("lng")
+            }
+          });
+        }else{
+          layer.open({
+            type: 1,
+            content: '正在定位中，请稍后重试',  // 内容
+            time: 3, // 几秒后自动关闭 默认 2
+            callback () {  // 几秒后自动关闭 回掉
+              that.tapWorkingIsClick = false;
+              console.log("几秒后自动关闭 回掉,可以点击上班");
+            }
+          })
+        }
 
-
-        // 发送上班请求
-        that.wsSeed({
-          "action":"active",
-          "data":{
-            "lat":window.localStorage.getItem("lat"),
-            "lng":window.localStorage.getItem("lng")
-          }
-        });
 
       }
 

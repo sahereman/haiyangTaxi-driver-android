@@ -104,13 +104,13 @@
   .layermcont{
     font-size: 0.85rem;
     display: block;
-    width: 150px;
+    width: 200px;
     text-align: center;
     height: 70px;
     line-height: 70px;
     position: fixed;
     top: 40%;
-    left: 30%;
+    left: 22%;
     min-height: 5rem;
     box-sizing: border-box;
     background: rgba(0,0,0,0.3);
