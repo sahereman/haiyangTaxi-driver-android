@@ -107,32 +107,39 @@ Vue.prototype.setBeat = function(){
   },3000);
 };
 /**用腾讯获取坐标**/
-Vue.prototype.coordinate=function (){
-  var geolocation = new qq.maps.Geolocation("ETBBZ-TOMRF-MTPJB-NWRP2-BAGU5-D6FV5", "海阳出租车-司机端");
-  var options = {timeout: 8000};
-  geolocation.getLocation(Vue.prototype.sucCallback, Vue.prototype.showErr, options);
-  geolocation.watchPosition(Vue.prototype.sucCallback);
-},
+Vue.prototype.qqMaps = new qq.maps.Geolocation("ETBBZ-TOMRF-MTPJB-NWRP2-BAGU5-D6FV5", "海阳出租车-司机端");
+//   Vue.prototype.qqMaps.getLocation(Vue.prototype.getLocationCallback, Vue.prototype.showErr, {timeout: 8000});
+//   Vue.prototype.qqMaps.watchPosition(Vue.prototype.watchPositionCallback);
 //定位成功回调
-Vue.prototype.sucCallback=function (position){
+Vue.prototype.getLocationCallback=function (position){
   var mapInfo = JSON.stringify(position, null, 4);
   var jsonMapInfo = eval('('+mapInfo+')');
-  console.log("进入定位成功回调"+JSON.stringify(jsonMapInfo));
-  if(jsonMapInfo.accuracy<=200){
+
+  window.localStorage.setItem("lat",jsonMapInfo.lat);
+  window.localStorage.setItem("lng",jsonMapInfo.lng);
+
+  // console.log("进入定位getLocationCallback : " + "腾讯经度为:"+jsonMapInfo.lng+",腾讯纬度为:"+jsonMapInfo.lat+",精准:"+jsonMapInfo.accuracy);
+  // alert("进入定位getLocationCallback : " + "腾讯经度为:"+jsonMapInfo.lng+",腾讯纬度为:"+jsonMapInfo.lat+",精准:"+jsonMapInfo.accuracy);
+
+},
+Vue.prototype.watchPositionCallback=function (position){
+  var mapInfo = JSON.stringify(position, null, 4);
+  var jsonMapInfo = eval('('+mapInfo+')');
+  if(jsonMapInfo.accuracy<=600){
     window.localStorage.setItem("lat",jsonMapInfo.lat);
     window.localStorage.setItem("lng",jsonMapInfo.lng);
   }
-  console.log("腾讯经度为:"+jsonMapInfo.lng+",腾讯纬度为:"+jsonMapInfo.lat);
+  // console.log("进入定位watchPositionCallback : " + "腾讯经度为:"+jsonMapInfo.lng+",腾讯纬度为:"+jsonMapInfo.lat+",精准:"+jsonMapInfo.accuracy);
+  // alert("进入定位watchPositionCallback : " + "腾讯经度为:"+jsonMapInfo.lng+",腾讯纬度为:"+jsonMapInfo.lat+",精准:"+jsonMapInfo.accuracy);
 },
 //定位失败回调
-  Vue.prototype.showErr=function (){
-    console.log("定位失败");
+Vue.prototype.showErr=function (){
+  console.log("定位失败");
 },
   //更新位置定时器
-Vue.prototype.locaTimer = "";
+Vue.prototype.locaTimer = null;
 Vue.prototype.setLocation = function(){
   //获取手机位置经纬度
-  Vue.prototype.coordinate();
   Vue.prototype.locaTimer = setInterval(function () {
     var obj = {
       "action":"location",
@@ -144,6 +151,9 @@ Vue.prototype.setLocation = function(){
     Vue.prototype.wsSeed(obj);
   },3000);
 }
+
+//首次调用定位
+Vue.prototype.qqMaps.getLocation(Vue.prototype.getLocationCallback, Vue.prototype.showErr, {timeout: 8000});
 
 //判断是否已经有token值，有的话连接socket，没有的话获取登录授权token
 Vue.prototype.token = window.localStorage.getItem('token');

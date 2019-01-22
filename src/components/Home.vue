@@ -75,6 +75,9 @@
             that.tapWorkingIsClick = false;
             layer.close();
 
+            //监听定位
+            that.qqMaps.watchPosition(that.watchPositionCallback);
+
             that.setLocation();
             that.$router.push({name:"working"});
             break;
@@ -147,6 +150,7 @@
             }
           });
         }else{
+          that.qqMaps.getLocation(that.getLocationCallback, that.showErr, {timeout: 8000});
           layer.open({
             type: 1,
             content: '正在定位中，请稍后重试',  // 内容

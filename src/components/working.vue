@@ -196,6 +196,10 @@ export default {
       var that = this;
       clearInterval(that.bTimer);
       clearInterval(that.locaTimer);
+
+      //关闭定位监听
+      that.qqMaps.clearWatch();
+
       that.wsSeed({
         "action":"close"
       });
