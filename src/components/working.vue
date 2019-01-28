@@ -64,7 +64,7 @@ export default {
     that.ws.onmessage = function(evt)
     {
       let data = JSON.parse(evt.data);
-      console.log("working:",data);
+      // console.log("working:",data);
       if(data.status_code == 200)
       {
         switch (data.action) {
@@ -88,6 +88,11 @@ export default {
             //将接收的order_id存起来，用于用户已上车和已到达的时候作为参数传过去
             var orderInfo = JSON.stringify(JSON.parse(evt.data).data);
             window.localStorage.setItem("orderInfo",orderInfo);
+            //接单成功，先关掉所有的定时器，再跳转页面
+            for(var i=0; i<that.wOrderList.length; i++){
+              var itemInterval = that.wOrderList[i].Interval;
+              window.clearInterval(itemInterval);
+            }
             that.$router.push({name:"receivers"});
             break;
           case 'close' :
@@ -103,11 +108,12 @@ export default {
               content: 'notify Error',  // 内容
               time: 3, // 几秒后自动关闭 默认 2
               callback () {  // 几秒后自动关闭 回掉
-                console.log('弹框消失')
+                // console.log('弹框消失')
               }
             })
             break;
           case 'accept' :
+            that.acceptOrd = false;
             let res = JSON.parse(evt.data);
             for(let obj in res.data)
             {
@@ -163,6 +169,7 @@ export default {
     //点击接单按钮
     acceptOrdBtn:function(){
       var that = this;
+      that.current=-1;
       if(that.$refs.acceptOrdBtn.className.indexOf("addColor")!=-1){
         //发送接单信息
         that.wsSeed({
@@ -182,14 +189,14 @@ export default {
           }
         })
       };
-      //只有选中订单按接单时才把所有的定时器关掉
-      if(that.acceptOrd){
+      //只有选中订单按接单时才把所有的定时器关掉(应该是接单成功再关掉所有的定时器)
+      // if(that.acceptOrd){
         //跳转页面之前把所有的定时器都关掉
-        for(var i=0; i<that.wOrderList.length; i++){
-          var itemInterval = that.wOrderList[i].Interval;
-          window.clearInterval(itemInterval);
-        }
-      }
+        // for(var i=0; i<that.wOrderList.length; i++){
+        //   var itemInterval = that.wOrderList[i].Interval;
+        //   window.clearInterval(itemInterval);
+        // }
+      // }
     },
     //下班
     tapEndWork:function () {
